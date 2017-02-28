@@ -52,6 +52,25 @@ int8_t Timer::every(unsigned long period, void (*callback)())
 	return every(period, callback, -1); // - means forever
 }
 
+int8_t Timer::firstAndEvery(unsigned long period, void (*callback)(), int repeatCount)
+{
+	int8_t i = findFreeEventIndex();
+	if (i == -1) return -1;
+
+	_events[i].eventType = EVENT_EVERY;
+	_events[i].period = period;
+	_events[i].repeatCount = repeatCount;
+	_events[i].callback = callback;
+	_events[i].lastEventTime = millis() - period;
+	_events[i].count = 0;
+	return i;
+}
+
+int8_t Timer::firstAndEvery(unsigned long period, void (*callback)())
+{
+	return firstAndEvery(period, callback, -1); // - means forever
+}
+
 int8_t Timer::after(unsigned long period, void (*callback)())
 {
 	return every(period, callback, 1);
